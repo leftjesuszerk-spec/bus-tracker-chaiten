@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bus Chaitén - Ronda Interpueblerina</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#0066cc">
+    <meta name="description" content="Rastreo en vivo del bus municipal de Chaitén">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- Icons -->
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+</head>
+<body>
+    <div id="app">
+        <!-- Pantalla de inicio / selector de rol -->
+        <div id="role-selector" class="screen active">
+            <div class="header">
+                <h1>🚌 Bus Chaitén</h1>
+                <p>Ronda Interpueblerina Municipal</p>
+            </div>
+            
+            <div class="role-buttons">
+                <button class="role-btn passenger" onclick="app.selectRole('passenger')">
+                    <span class="icon">👥</span>
+                    <h2>Ver Ubicación del Bus</h2>
+                    <p>Para pasajeros que quieren saber dónde está el bus</p>
+                </button>
+                
+                <button class="role-btn driver" onclick="app.selectRole('driver')">
+                    <span class="icon">🚌</span>
+                    <h2>Soy el Conductor</h2>
+                    <p>Compartir ubicación del bus</p>
+                </button>
+            </div>
+        </div>
+
+        <!-- Pantalla del conductor -->
+        <div id="driver-screen" class="screen">
+            <div class="header">
+                <button class="back-btn" onclick="app.goBack()">←</button>
+                <h1>Conductor</h1>
+            </div>
+            
+            <div class="driver-content">
+                <div id="driver-status" class="status-box stopped">
+                    <div class="status-icon">📍</div>
+                    <div class="status-text">GPS Detenido</div>
+                    <div class="status-detail">Presiona Iniciar para compartir ubicación</div>
+                </div>
+                
+                <div id="driver-info" class="info-box hidden">
+                    <div class="info-row">
+                        <span>Latitud:</span>
+                        <span id="driver-lat">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span>Longitud:</span>
+                        <span id="driver-lng">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span>Última actualización:</span>
+                        <span id="driver-time">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span>Precisión:</span>
+                        <span id="driver-accuracy">-</span>
+                    </div>
+                </div>
+                
+                <div class="signal-strength">
+                    <div class="signal-bar" id="signal-bar-1"></div>
+                    <div class="signal-bar" id="signal-bar-2"></div>
+                    <div class="signal-bar" id="signal-bar-3"></div>
+                    <div class="signal-bar" id="signal-bar-4"></div>
+                    <span>Señal GPS</span>
+                </div>
+                
+                <button id="toggle-gps-btn" class="action-btn start" onclick="app.toggleGPS()">
+                    Iniciar GPS
+                </button>
+                
+                <div class="driver-instructions">
+                    <h3>Instrucciones:</h3>
+                    <ol>
+                        <li>Presiona "Iniciar GPS"</li>
+                        <li>Permite el acceso a ubicación</li>
+                        <li>Mantén la app abierta mientras conduces</li>
+                        <li>La ubicación se actualiza cada 30 segundos</li>
+                    </ol>
+                    <div class="battery-warning">
+                        ⚠️ Esto consume batería. Recomendado usar con cargador
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pantalla del pasajero -->
+        <div id="passenger-screen" class="screen">
+            <div class="header">
+                <button class="back-btn" onclick="app.goBack()">←</button>
+                <h1>Ubicación del Bus</h1>
+                <div class="connection-status" id="connection-status">🟢 Conectado</div>
+            </div>
+            
+            <div id="map-container">
+                <div id="map"></div>
+                
+                <!-- Overlay con info del bus -->
+                <div id="bus-info-overlay" class="info-overlay">
+                    <div class="bus-status">
+                        <div class="bus-icon">🚌</div>
+                        <div class="bus-details">
+                            <div class="bus-status-text" id="bus-status-text">Actualizando...</div>
+                            <div class="bus-last-update" id="bus-last-update">-</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Botón de centrar mapa -->
+                <button class="center-btn" onclick="app.centerOnBus()" title="Centrar en el bus">
+                    🎯
+                </button>
+            </div>
+            
+            <div class="passenger-info">
+                <div class="info-card">
+                    <h3>Horarios Aproximados</h3>
+                    <div class="schedule-list" id="schedule-list">
+                        <p>Cargando horarios...</p>
+                    </div>
+                </div>
+                
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-icon bus-marker-legend"></div>
+                        <span>Bus actual</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-icon stop-marker-legend"></div>
+                        <span>Paradas del recorrido</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pantalla de configuración -->
+        <div id="config-screen" class="screen">
+            <div class="header">
+                <button class="back-btn" onclick="app.goBack()">←</button>
+                <h1>Configuración</h1>
+            </div>
+            
+            <div class="config-content">
+                <div class="config-section">
+                    <h3>Conexión Supabase</h3>
+                    <p>Esta configuración solo es necesaria una vez:</p>
+                    <div class="input-group">
+                        <label>URL de Supabase:</label>
+                        <input type="text" id="supabase-url" placeholder="https://xxxxx.supabase.co" value="">
+                    </div>
+                    <div class="input-group">
+                        <label>API Key (anon/public):</label>
+                        <input type="text" id="supabase-key" placeholder="eyJ..." value="">
+                    </div>
+                    <button class="action-btn" onclick="app.saveConfig()">Guardar Configuración</button>
+                </div>
+                
+                <div class="config-section">
+                    <h3>Información</h3>
+                    <p><strong>Bus Chaitén v1.0</strong></p>
+                    <p>Aplicación para rastreo del bus municipal de Chaitén, Región de Los Lagos, Chile.</p>
+                    <p>Desarrollado para la comunidad.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botón de configuración -->
+        <button class="config-btn" onclick="app.showConfig()" title="Configuración">⚙️</button>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="js/config.js"></script>
+    <script src="js/app.js"></script>
+    
+    <!-- Service Worker -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(reg => console.log('Service Worker registrado'))
+                .catch(err => console.log('Error registrando Service Worker:', err));
+        }
+    </script>
+</body>
+</html>

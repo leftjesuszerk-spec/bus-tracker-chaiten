@@ -1,0 +1,12 @@
+<!-- Icono temporal - Reemplazar con íconos reales de diferentes tamaños --
+     Puedes usar: https://realfavicongenerator.net/ para generar todos los tamaños -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192">
+    <defs>
+        <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#0066cc;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#004499;stop-opacity:1" />
+        </linearGradient>
+    </defs>
+    <rect width="192" height="192" rx="24" fill="url(#grad)"/>
+    <text x="96" y="115" font-size="100" text-anchor="middle" fill="white">🚌</text>
+</svg>
