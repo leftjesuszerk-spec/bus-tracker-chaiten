@@ -1,6 +1,6 @@
 /* ==============================================
    Driver App - Minimal Dark Theme
-   Estilo CLI profesional
+   Sin login - Solo botón de iniciar
    ============================================== */
 
 * {
@@ -37,90 +37,67 @@ html, body {
 }
 
 /* ==============================================
-   Login Screen
+   Start Screen
    ============================================== */
 
-.login-container {
+.start-container {
     flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
     padding: 40px 30px;
     background: linear-gradient(180deg, #0d0d0d 0%, #1a1a1a 100%);
-}
-
-.login-header {
     text-align: center;
-    margin-bottom: 50px;
 }
 
-.logo {
-    font-size: 48px;
-    margin-bottom: 20px;
-    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5));
+.start-icon {
+    font-size: 64px;
+    margin-bottom: 30px;
+    filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.5));
 }
 
-.login-header h1 {
-    font-size: 18px;
+.start-container h1 {
+    font-size: 20px;
     font-weight: 600;
     letter-spacing: 4px;
     color: #fff;
     margin-bottom: 10px;
 }
 
-.login-header p {
-    font-size: 11px;
+.start-container p {
+    font-size: 12px;
     color: #666;
     letter-spacing: 1px;
+    margin-bottom: 50px;
 }
 
-.login-form {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-.input-group input {
-    width: 100%;
-    padding: 16px;
-    background: rgba(30, 30, 30, 0.8);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 8px;
-    color: #fff;
-    font-size: 14px;
-    font-family: inherit;
-    text-align: center;
-    transition: all 0.2s;
-}
-
-.input-group input::placeholder {
-    color: #555;
-}
-
-.input-group input:focus {
-    outline: none;
-    border-color: #0066cc;
-    background: rgba(0, 102, 204, 0.1);
-}
-
-.login-btn {
-    padding: 16px;
+.start-btn {
+    padding: 18px 40px;
     background: linear-gradient(135deg, #0066cc 0%, #004499 100%);
     color: #fff;
     border: none;
-    border-radius: 8px;
-    font-size: 13px;
+    border-radius: 10px;
+    font-size: 14px;
     font-weight: 600;
     letter-spacing: 2px;
     font-family: inherit;
     cursor: pointer;
-    margin-top: 10px;
     transition: all 0.2s;
+    box-shadow: 0 4px 20px rgba(0, 102, 204, 0.3);
 }
 
-.login-btn:active {
+.start-btn:active {
     transform: scale(0.98);
     opacity: 0.9;
+}
+
+.start-note {
+    margin-top: 30px !important;
+    font-size: 10px !important;
+    color: #555 !important;
+    max-width: 250px;
+    line-height: 1.5;
 }
 
 /* ==============================================
@@ -130,7 +107,6 @@ html, body {
 .driver-header {
     background: rgba(26, 26, 26, 0.95);
     backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
     padding: 14px 20px;
     display: flex;
     justify-content: space-between;
@@ -143,40 +119,35 @@ html, body {
     flex-direction: column;
 }
 
-.driver-name {
-    font-size: 13px;
-    font-weight: 600;
-    color: #fff;
-}
-
 .driver-status {
-    font-size: 9px;
+    font-size: 10px;
     color: #666;
     letter-spacing: 1px;
-    margin-top: 4px;
 }
 
 .driver-status.connected {
     color: #00ff88;
 }
 
-.logout-btn {
-    background: rgba(255, 255, 255, 0.05);
-    color: #666;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    padding: 8px 16px;
-    border-radius: 6px;
-    font-size: 10px;
+.driver-status.stopped {
+    color: #ff4444;
+}
+
+.stop-btn {
+    background: rgba(255, 68, 68, 0.2);
+    color: #ff4444;
+    border: 1px solid rgba(255, 68, 68, 0.3);
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 11px;
     letter-spacing: 1px;
     font-family: inherit;
     cursor: pointer;
     transition: all 0.2s;
 }
 
-.logout-btn:active {
-    background: rgba(255, 68, 68, 0.2);
-    color: #ff4444;
-    border-color: rgba(255, 68, 68, 0.3);
+.stop-btn:active {
+    background: rgba(255, 68, 68, 0.3);
 }
 
 .driver-map {
@@ -283,21 +254,13 @@ html, body {
     display: none !important;
 }
 
-.leaflet-tile-pane {
-    filter: brightness(0.85) contrast(1.1) saturate(0.9);
-}
-
 /* ==============================================
-   Error message
+   Responsive Desktop
    ============================================== */
 
-.error-message {
-    background: rgba(255, 68, 68, 0.1);
-    border: 1px solid rgba(255, 68, 68, 0.2);
-    color: #ff4444;
-    padding: 12px;
-    border-radius: 6px;
-    text-align: center;
-    font-size: 11px;
-    margin-bottom: 10px;
+@media (min-width: 769px) {
+    .start-container {
+        max-width: 500px;
+        margin: 0 auto;
+    }
 }

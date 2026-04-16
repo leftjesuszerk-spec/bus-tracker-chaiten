@@ -16,39 +16,32 @@
 </head>
 <body>
     <div id="driver-app">
-        <!-- Login Screen -->
-        <div id="login-screen" class="screen active">
-            <div class="login-container">
-                <div class="login-header">
-                    <div class="logo">🚌</div>
-                    <h1>CONDUCTOR</h1>
-                    <p>Bus Chaitén - Ronda Municipal</p>
-                </div>
+        <!-- Pantalla de inicio - Designarse como conductor -->
+        <div id="start-screen" class="screen active">
+            <div class="start-container">
+                <div class="start-icon">🚌</div>
+                <h1>CONDUCTOR</h1>
+                <p>Bus Chaitén - Ronda Municipal</p>
                 
-                <div class="login-form">
-                    <div class="input-group">
-                        <input type="text" id="driver-name" placeholder="Usuario" autocomplete="off" autocapitalize="off">
-                    </div>
-                    
-                    <div class="input-group">
-                        <input type="password" id="driver-password" placeholder="Contraseña">
-                    </div>
-                    
-                    <button class="login-btn" onclick="driverApp.login()">
-                        INICIAR SESIÓN
-                    </button>
-                </div>
+                <button class="start-btn" onclick="driverApp.startDriving()">
+                    INICIAR COMO CONDUCTOR
+                </button>
+                
+                <p class="start-note">
+                    Al presionar, comenzarás a compartir la ubicación del bus en tiempo real.
+                </p>
             </div>
         </div>
         
-        <!-- Main Driver Screen -->
+        <!-- Pantalla principal conductor -->
         <div id="driver-main" class="screen">
             <div class="driver-header">
                 <div class="driver-info">
-                    <span class="driver-name" id="display-driver-name">Conductor</span>
                     <span class="driver-status connected">● EN LÍNEA</span>
                 </div>
-                <button class="logout-btn" onclick="driverApp.logout()">SALIR</button>
+                <button class="stop-btn" onclick="driverApp.stopDriving()">
+                    DETENER
+                </button>
             </div>
             
             <div class="driver-map" id="driver-map"></div>

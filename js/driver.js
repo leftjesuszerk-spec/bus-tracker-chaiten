@@ -1,12 +1,11 @@
 /**
  * Bus Tracker Chaitén - Driver App
- * Minimal dark theme - Estilo CLI
+ * Sin login - Solo botón de iniciar
  */
 
 const driverApp = {
     state: {
-        isLoggedIn: false,
-        driverName: '',
+        isDriving: false,
         supabase: null,
         gpsActive: false,
         watchId: null,
@@ -18,7 +17,6 @@ const driverApp = {
     
     init() {
         this.initSupabase();
-        this.checkLogin();
     },
     
     initSupabase() {
@@ -38,86 +36,46 @@ const driverApp = {
         }
     },
     
-    checkLogin() {
-        const storedName = localStorage.getItem('driver_name');
-        const isLoggedIn = localStorage.getItem('driver_logged_in');
+    startDriving() {
+        this.state.isDriving = true;
+        document.getElementById('start-screen').classList.remove('active');
+        document.getElementById('driver-main').classList.add('active');
         
-        if (storedName && isLoggedIn === 'true') {
-            this.state.isLoggedIn = true;
-            this.state.driverName = storedName;
-            this.showMainScreen();
-        }
+        // Inicializar mapa
+        setTimeout(() => this.initMap(), 100);
     },
     
-    login() {
-        const nameInput = document.getElementById('driver-name');
-        const passwordInput = document.getElementById('driver-password');
-        
-        const name = nameInput.value.trim();
-        const password = passwordInput.value.trim();
-        
-        const validCredentials = {
-            'carlos': 'bus2024',
-            'conductor': 'bus2024',
-            'admin': 'admin123'
-        };
-        
-        if (!name || !password) {
-            this.showError('Complete todos los campos');
-            return;
-        }
-        
-        if (validCredentials[name.toLowerCase()] === password) {
-            localStorage.setItem('driver_name', name);
-            localStorage.setItem('driver_logged_in', 'true');
-            
-            this.state.isLoggedIn = true;
-            this.state.driverName = name;
-            
-            this.showMainScreen();
-        } else {
-            this.showError('Credenciales incorrectas');
-        }
-    },
-    
-    logout() {
+    stopDriving() {
         this.stopGPS();
         
-        localStorage.removeItem('driver_name');
-        localStorage.removeItem('driver_logged_in');
+        this.state.isDriving = false;
         
-        this.state.isLoggedIn = false;
-        this.state.driverName = '';
+        // Limpiar datos de ubicación en Supabase
+        this.clearBusLocation();
         
-        document.getElementById('login-screen').classList.add('active');
+        // Volver a pantalla de inicio
         document.getElementById('driver-main').classList.remove('active');
-        
-        document.getElementById('driver-name').value = '';
-        document.getElementById('driver-password').value = '';
+        document.getElementById('start-screen').classList.add('active');
         
         // Reset map
         this.state.map = null;
         this.state.busMarker = null;
     },
     
-    showError(message) {
-        const existing = document.querySelector('.error-message');
-        if (existing) existing.remove();
+    async clearBusLocation() {
+        if (!this.state.supabase) return;
         
-        const form = document.querySelector('.login-form');
-        const errorDiv = document.createElement('div');
-        errorDiv.className = 'error-message';
-        errorDiv.textContent = message;
-        
-        form.insertBefore(errorDiv, form.firstChild);
-    },
-    
-    showMainScreen() {
-        document.getElementById('login-screen').classList.remove('active');
-        document.getElementById('driver-main').classList.add('active');
-        document.getElementById('display-driver-name').textContent = this.state.driverName.toUpperCase();
-        
-        setTimeout(() => this.initMap(), 100);
+        try {
+            // Eliminar la ubicación del bus
+            await this.state.supabase
+                .from('bus_locations')
+                .delete()
+                .eq('bus_id', CONFIG.app.busId);
+            
+            console.log('🗑️ Ubicación limpiada');
+        } catch (err) {
+            console.error('Error limpiando:', err);
+        }
     },
     
     initMap() {
@@ -125,7 +83,6 @@ const driverApp = {
             const container = document.getElementById('driver-map');
             if (!container || this.state.map) return;
             
-            // Sin restricciones de movimiento
             this.state.map = L.map('driver-map', {
                 zoomControl: false,
                 minZoom: 10,
@@ -201,6 +158,9 @@ const driverApp = {
         
         this.state.gpsActive = false;
         this.updateUI(false);
+        
+        // Limpiar ubicación
+        this.clearBusLocation();
     },
     
     onGPSUpdate(position) {
@@ -251,6 +211,7 @@ const driverApp = {
     updateUI(active) {
         const statusBox = document.getElementById('gps-status');
         const btn = document.getElementById('toggle-gps');
+        const statusText = document.querySelector('.driver-status');
         
         if (active) {
             statusBox.classList.remove('stopped');
@@ -262,6 +223,11 @@ const driverApp = {
             btn.textContent = 'DETENER GPS';
             btn.classList.remove('start');
             btn.classList.add('stop');
+            
+            if (statusText) {
+                statusText.textContent = '● EN LÍNEA';
+                statusText.className = 'driver-status connected';
+            }
         } else {
             statusBox.classList.remove('active');
             statusBox.classList.add('stopped');
@@ -272,6 +238,16 @@ const driverApp = {
             btn.textContent = 'INICIAR GPS';
             btn.classList.remove('stop');
             btn.classList.add('start');
+            
+            if (statusText) {
+                statusText.textContent = '● DETENIDO';
+                statusText.className = 'driver-status stopped';
+            }
+            
+            // Reset location info
+            document.getElementById('current-lat').textContent = '--.-----';
+            document.getElementById('current-lng').textContent = '--.-----';
+            document.getElementById('current-time').textContent = '--:--:--';
         }
     },
     
@@ -286,7 +262,6 @@ const driverApp = {
                     latitude: data.lat,
                     longitude: data.lng,
                     accuracy: data.accuracy,
-                    driver_name: this.state.driverName,
                     updated_at: data.timestamp
                 }, { onConflict: 'bus_id' });
             
