@@ -39,48 +39,54 @@ const app = {
     },
     
     initMap() {
-        setTimeout(() => {
-            const mapContainer = document.getElementById('map');
-            if (!mapContainer) return;
-            
-            // Primero crear el mapa centrado en la plaza (centro del pueblo)
-            this.state.map = L.map('map', {
-                zoomControl: false,
-                minZoom: CONFIG.app.minZoom,
-                maxZoom: CONFIG.app.maxZoom,
-                maxBounds: CONFIG.app.mapBounds,
-                maxBoundsViscosity: 1.0,
-                attributionControl: false,
-                center: [CONFIG.plazaPrincipal.lat, CONFIG.plazaPrincipal.lng],
-                zoom: 15
-            });
-            
-            this.state.map.setMaxBounds(CONFIG.app.mapBounds);
-            
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: CONFIG.app.maxZoom,
-                attribution: ''
-            }).addTo(this.state.map);
-            
-            // Add plaza marker
-            this.addPlazaMarker();
-            
-            // Centrar el mapa correctamente
-            setTimeout(() => {
-                if (this.state.map) {
-                    this.state.map.invalidateSize();
-                    // Centrar en la plaza al inicio
-                    this.state.map.setView([CONFIG.plazaPrincipal.lat, CONFIG.plazaPrincipal.lng], 15);
-                }
-            }, 150);
-            
-        }, 50);
+        const mapContainer = document.getElementById('map');
+        if (!mapContainer) {
+            console.error('Map container not found');
+            return;
+        }
+        
+        // Usar las coordenadas de la plaza directamente
+        const plazaLat = CONFIG.plazaPrincipal.lat;
+        const plazaLng = CONFIG.plazaPrincipal.lng;
+        
+        console.log('Inicializando mapa en:', plazaLat, plazaLng);
+        
+        // Crear el mapa
+        this.state.map = L.map('map', {
+            zoomControl: false,
+            minZoom: CONFIG.app.minZoom,
+            maxZoom: CONFIG.app.maxZoom,
+            maxBounds: CONFIG.app.mapBounds,
+            maxBoundsViscosity: 1.0,
+            attributionControl: false
+        });
+        
+        // Establecer límites
+        this.state.map.setMaxBounds(CONFIG.app.mapBounds);
+        
+        // Establecer vista inicial
+        this.state.map.setView([plazaLat, plazaLng], 15);
+        
+        // Agregar tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: CONFIG.app.maxZoom,
+            attribution: ''
+        }).addTo(this.state.map);
+        
+        // Agregar marcador de plaza
+        this.addPlazaMarker();
+        
+        // Forzar actualización de tamaño
+        this.state.map.invalidateSize();
+        
+        console.log('Mapa inicializado en:', this.state.map.getCenter());
     },
     
     addPlazaMarker() {
         if (!this.state.map || !CONFIG.plazaPrincipal) return;
         
         const plaza = CONFIG.plazaPrincipal;
+        console.log('Agregando plaza en:', plaza.lat, plaza.lng);
         
         L.marker([plaza.lat, plaza.lng], {
             icon: L.divIcon({
@@ -126,6 +132,7 @@ const app = {
                     filter: `bus_id=eq.${CONFIG.app.busId}`
                 },
                 (payload) => {
+                    console.log('Ubicación actualizada:', payload.new);
                     this.updateBusLocation({
                         lat: payload.new.latitude,
                         lng: payload.new.longitude,
@@ -134,6 +141,7 @@ const app = {
                 }
             )
             .subscribe((status) => {
+                console.log('Estado de conexión:', status);
                 if (status === 'SUBSCRIBED') {
                     this.setConnectionStatus('connected');
                 } else {
@@ -151,6 +159,7 @@ const app = {
                 .single();
             
             if (data) {
+                console.log('Datos del bus obtenidos:', data);
                 this.updateBusLocation({
                     lat: data.latitude,
                     lng: data.longitude,
@@ -266,6 +275,7 @@ const app = {
     }
 };
 
+// Inicializar cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', () => {
     app.init();
 });
