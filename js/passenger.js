@@ -43,17 +43,17 @@ const app = {
             const mapContainer = document.getElementById('map');
             if (!mapContainer) return;
             
+            // Primero crear el mapa centrado en la plaza (centro del pueblo)
             this.state.map = L.map('map', {
                 zoomControl: false,
                 minZoom: CONFIG.app.minZoom,
                 maxZoom: CONFIG.app.maxZoom,
                 maxBounds: CONFIG.app.mapBounds,
                 maxBoundsViscosity: 1.0,
-                attributionControl: false
-            }).setView(
-                [CONFIG.app.defaultLocation.lat, CONFIG.app.defaultLocation.lng],
-                16
-            );
+                attributionControl: false,
+                center: [CONFIG.plazaPrincipal.lat, CONFIG.plazaPrincipal.lng],
+                zoom: 15
+            });
             
             this.state.map.setMaxBounds(CONFIG.app.mapBounds);
             
@@ -65,9 +65,14 @@ const app = {
             // Add plaza marker
             this.addPlazaMarker();
             
+            // Centrar el mapa correctamente
             setTimeout(() => {
-                if (this.state.map) this.state.map.invalidateSize();
-            }, 100);
+                if (this.state.map) {
+                    this.state.map.invalidateSize();
+                    // Centrar en la plaza al inicio
+                    this.state.map.setView([CONFIG.plazaPrincipal.lat, CONFIG.plazaPrincipal.lng], 15);
+                }
+            }, 150);
             
         }, 50);
     },
