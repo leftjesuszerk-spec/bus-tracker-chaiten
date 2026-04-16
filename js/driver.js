@@ -125,31 +125,27 @@ const driverApp = {
             const container = document.getElementById('driver-map');
             if (!container || this.state.map) return;
             
+            // Sin restricciones de movimiento
             this.state.map = L.map('driver-map', {
                 zoomControl: false,
-                minZoom: CONFIG.app.minZoom,
-                maxZoom: CONFIG.app.maxZoom,
-                maxBounds: CONFIG.app.mapBounds,
+                minZoom: 10,
+                maxZoom: 19,
                 attributionControl: false
-            }).setView([CONFIG.app.defaultLocation.lat, CONFIG.app.defaultLocation.lng], 15);
-            
-            this.state.map.setMaxBounds(CONFIG.app.mapBounds);
+            }).setView([-42.9150, -72.7167], 15);
             
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: CONFIG.app.maxZoom
+                maxZoom: 19
             }).addTo(this.state.map);
             
             // Plaza marker
-            if (CONFIG.plazaPrincipal) {
-                L.marker([CONFIG.plazaPrincipal.lat, CONFIG.plazaPrincipal.lng], {
-                    icon: L.divIcon({
-                        className: 'plaza-marker',
-                        html: '<div style="background:linear-gradient(135deg,#FFD700,#FFA500);border:2px solid #fff;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:12px">⭐</div>',
-                        iconSize: [24, 24],
-                        iconAnchor: [12, 12]
-                    })
-                }).addTo(this.state.map).bindPopup('<b>PLAZA PRINCIPAL</b>');
-            }
+            L.marker([-42.9150, -72.7167], {
+                icon: L.divIcon({
+                    className: 'plaza-marker',
+                    html: '<div style="background:linear-gradient(135deg,#FFD700,#FFA500);border:2px solid #fff;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:12px">⭐</div>',
+                    iconSize: [24, 24],
+                    iconAnchor: [12, 12]
+                })
+            }).addTo(this.state.map).bindPopup('<b>PLAZA PRINCIPAL</b>');
             
         }, 50);
     },

@@ -45,31 +45,27 @@ const app = {
             return;
         }
         
-        // Usar las coordenadas de la plaza directamente
-        const plazaLat = CONFIG.plazaPrincipal.lat;
-        const plazaLng = CONFIG.plazaPrincipal.lng;
+        // Coordenadas de Chaitén (plaza central)
+        const chaitenCenter = [-42.9150, -72.7167];
         
-        console.log('Inicializando mapa en:', plazaLat, plazaLng);
+        console.log('Inicializando mapa en Chaitén:', chaitenCenter);
         
-        // Crear el mapa
+        // Crear el mapa SIN restricciones de movimiento
         this.state.map = L.map('map', {
             zoomControl: false,
-            minZoom: CONFIG.app.minZoom,
-            maxZoom: CONFIG.app.maxZoom,
-            maxBounds: CONFIG.app.mapBounds,
-            maxBoundsViscosity: 1.0,
-            attributionControl: false
+            attributionControl: false,
+            // Quitar todas las restricciones de movimiento
+            minZoom: 10,
+            maxZoom: 19
+            // SIN maxBounds - libre movimiento
         });
         
-        // Establecer límites
-        this.state.map.setMaxBounds(CONFIG.app.mapBounds);
-        
         // Establecer vista inicial
-        this.state.map.setView([plazaLat, plazaLng], 15);
+        this.state.map.setView(chaitenCenter, 15);
         
         // Agregar tiles
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: CONFIG.app.maxZoom,
+            maxZoom: 19,
             attribution: ''
         }).addTo(this.state.map);
         
@@ -77,18 +73,18 @@ const app = {
         this.addPlazaMarker();
         
         // Forzar actualización de tamaño
-        this.state.map.invalidateSize();
-        
-        console.log('Mapa inicializado en:', this.state.map.getCenter());
+        setTimeout(() => {
+            this.state.map.invalidateSize();
+            console.log('Mapa inicializado en:', this.state.map.getCenter());
+        }, 100);
     },
     
     addPlazaMarker() {
-        if (!this.state.map || !CONFIG.plazaPrincipal) return;
+        // Plaza de Chaitén
+        const plazaLat = -42.9150;
+        const plazaLng = -72.7167;
         
-        const plaza = CONFIG.plazaPrincipal;
-        console.log('Agregando plaza en:', plaza.lat, plaza.lng);
-        
-        L.marker([plaza.lat, plaza.lng], {
+        L.marker([plazaLat, plazaLng], {
             icon: L.divIcon({
                 className: 'plaza-marker',
                 html: `
@@ -256,9 +252,31 @@ const app = {
     
     centerOnBus() {
         if (this.state.map && this.state.busMarker) {
-            const latLng = this.state.busMarker.getLatLng();
-            this.state.map.setView(latLng, 17, { animate: true, duration: 0.5 });
-            this.state.busMarker.openPopup();
+            const busLatLng = this.state.busMarker.getLatLng();
+            
+            // Obtener el centro actual de la vista del usuario
+            const currentCenter = this.state.map.getCenter();
+            
+            // Calcular el desplazamiento necesario para centrar el bus
+            const latDiff = busLatLng.lat - currentCenter.lat;
+            const lngDiff = busLatLng.lng - currentCenter.lng;
+            
+            console.log('Centrando bus - Bus:', busLatLng, 'Centro actual:', currentCenter);
+            
+            // Centrar el mapa en el bus con animación
+            this.state.map.setView([busLatLng.lat, busLatLng.lng], 17, {
+                animate: true,
+                duration: 0.5
+            });
+            
+            // Abrir popup después de un pequeño delay para que centrarse complete
+            setTimeout(() => {
+                if (this.state.busMarker) {
+                    this.state.busMarker.openPopup();
+                }
+            }, 600);
+        } else {
+            console.log('No hay bus para centrar');
         }
     },
     
