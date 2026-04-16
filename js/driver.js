@@ -1,6 +1,6 @@
 /**
- * Bus Tracker Chaitén - Conductor App
- * Login separado para el conductor
+ * Bus Tracker Chaitén - Driver App
+ * Minimal dark theme - Estilo CLI
  */
 
 const driverApp = {
@@ -27,12 +27,10 @@ const driverApp = {
             const supabaseKey = CONFIG.getSupabaseKey();
             
             if (!supabaseUrl || !supabaseKey) {
-                console.log('Supabase no configurado');
                 return false;
             }
             
             this.state.supabase = supabase.createClient(supabaseUrl, supabaseKey);
-            console.log('Conector Supabase listo');
             return true;
         } catch (error) {
             console.error('Error:', error);
@@ -58,7 +56,6 @@ const driverApp = {
         const name = nameInput.value.trim();
         const password = passwordInput.value.trim();
         
-        // Credenciales hardcodeadas (en producción usar DB)
         const validCredentials = {
             'carlos': 'bus2024',
             'conductor': 'bus2024',
@@ -66,13 +63,11 @@ const driverApp = {
         };
         
         if (!name || !password) {
-            this.showError('Por favor completa todos los campos');
+            this.showError('Complete todos los campos');
             return;
         }
         
-        // Verificar credenciales
         if (validCredentials[name.toLowerCase()] === password) {
-            // Login exitoso
             localStorage.setItem('driver_name', name);
             localStorage.setItem('driver_logged_in', 'true');
             
@@ -86,27 +81,26 @@ const driverApp = {
     },
     
     logout() {
-        // Detener GPS si está activo
         this.stopGPS();
         
-        // Limpiar datos de sesión
         localStorage.removeItem('driver_name');
         localStorage.removeItem('driver_logged_in');
         
         this.state.isLoggedIn = false;
         this.state.driverName = '';
         
-        // Volver a pantalla de login
         document.getElementById('login-screen').classList.add('active');
         document.getElementById('driver-main').classList.remove('active');
         
-        // Limpiar campos
         document.getElementById('driver-name').value = '';
         document.getElementById('driver-password').value = '';
+        
+        // Reset map
+        this.state.map = null;
+        this.state.busMarker = null;
     },
     
     showError(message) {
-        // Eliminar errores previos
         const existing = document.querySelector('.error-message');
         if (existing) existing.remove();
         
@@ -121,9 +115,8 @@ const driverApp = {
     showMainScreen() {
         document.getElementById('login-screen').classList.remove('active');
         document.getElementById('driver-main').classList.add('active');
-        document.getElementById('display-driver-name').textContent = this.state.driverName;
+        document.getElementById('display-driver-name').textContent = this.state.driverName.toUpperCase();
         
-        // Inicializar mapa después de un momento
         setTimeout(() => this.initMap(), 100);
     },
     
@@ -136,7 +129,8 @@ const driverApp = {
                 zoomControl: false,
                 minZoom: CONFIG.app.minZoom,
                 maxZoom: CONFIG.app.maxZoom,
-                maxBounds: CONFIG.app.mapBounds
+                maxBounds: CONFIG.app.mapBounds,
+                attributionControl: false
             }).setView([CONFIG.app.defaultLocation.lat, CONFIG.app.defaultLocation.lng], 15);
             
             this.state.map.setMaxBounds(CONFIG.app.mapBounds);
@@ -145,16 +139,16 @@ const driverApp = {
                 maxZoom: CONFIG.app.maxZoom
             }).addTo(this.state.map);
             
-            // Agregar marcador de la plaza
+            // Plaza marker
             if (CONFIG.plazaPrincipal) {
                 L.marker([CONFIG.plazaPrincipal.lat, CONFIG.plazaPrincipal.lng], {
                     icon: L.divIcon({
                         className: 'plaza-marker',
-                        html: '<div style="background:#FFD700;border:3px solid #FF6B35;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:14px">⭐</div>',
-                        iconSize: [30, 30],
-                        iconAnchor: [15, 15]
+                        html: '<div style="background:linear-gradient(135deg,#FFD700,#FFA500);border:2px solid #fff;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:12px">⭐</div>',
+                        iconSize: [24, 24],
+                        iconAnchor: [12, 12]
                     })
-                }).addTo(this.state.map).bindPopup('<b>PLAZA</b>');
+                }).addTo(this.state.map).bindPopup('<b>PLAZA PRINCIPAL</b>');
             }
             
         }, 50);
@@ -170,7 +164,7 @@ const driverApp = {
     
     startGPS() {
         if (!navigator.geolocation) {
-            alert('Tu dispositivo no soporta GPS');
+            alert('GPS no disponible');
             return;
         }
         
@@ -228,7 +222,7 @@ const driverApp = {
             this.sendLocationToSupabase(data);
         }
         
-        // Actualizar mapa
+        // Update map
         if (this.state.map) {
             this.state.map.setView([data.lat, data.lng], 16);
             
@@ -238,21 +232,17 @@ const driverApp = {
                 this.state.busMarker = L.marker([data.lat, data.lng], {
                     icon: L.divIcon({
                         className: 'bus-marker',
-                        html: '<div style="background:#28a745;border:4px solid white;border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:20px">🚌</div>',
+                        html: '<div style="background:linear-gradient(135deg,#28a745,#1e7e34);border:3px solid #fff;border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:20px">🚌</div>',
                         iconSize: [40, 40],
                         iconAnchor: [20, 20]
                     })
-                }).addTo(this.state.map).bindPopup('<b>Tu Bus</b>');
+                }).addTo(this.state.map).bindPopup('<b>TU BUS</b>');
             }
         }
     },
     
     onGPSError(error) {
-        const messages = {
-            1: 'Permiso denegado',
-            2: 'GPS no disponible',
-            3: 'Tiempo agotado'
-        };
+        const messages = { 1: 'Permiso denegado', 2: 'GPS no disponible', 3: 'Tiempo agotado' };
         console.error('GPS:', messages[error.code] || 'Error');
     },
     
@@ -270,20 +260,20 @@ const driverApp = {
             statusBox.classList.remove('stopped');
             statusBox.classList.add('active');
             statusBox.querySelector('.status-icon').textContent = '📡';
-            statusBox.querySelector('.status-text').textContent = 'GPS Activo';
+            statusBox.querySelector('.status-text').textContent = 'GPS ACTIVO';
             statusBox.querySelector('.status-detail').textContent = 'Compartiendo ubicación';
             
-            btn.textContent = 'Detener GPS';
+            btn.textContent = 'DETENER GPS';
             btn.classList.remove('start');
             btn.classList.add('stop');
         } else {
             statusBox.classList.remove('active');
             statusBox.classList.add('stopped');
             statusBox.querySelector('.status-icon').textContent = '📍';
-            statusBox.querySelector('.status-text').textContent = 'GPS Detenido';
+            statusBox.querySelector('.status-text').textContent = 'GPS DETENIDO';
             statusBox.querySelector('.status-detail').textContent = 'Presiona iniciar';
             
-            btn.textContent = 'Iniciar GPS';
+            btn.textContent = 'INICIAR GPS';
             btn.classList.remove('stop');
             btn.classList.add('start');
         }
@@ -304,14 +294,13 @@ const driverApp = {
                     updated_at: data.timestamp
                 }, { onConflict: 'bus_id' });
             
-            console.log('📍 Ubicación enviada');
+            console.log('📍 Enviado');
         } catch (err) {
             console.error('Error:', err);
         }
     }
 };
 
-// Inicializar cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', () => {
     driverApp.init();
 });

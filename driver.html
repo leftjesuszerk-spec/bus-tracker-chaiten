@@ -5,53 +5,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Conductor - Bus Chaitén</title>
     
-    <meta name="theme-color" content="#28a745">
+    <meta name="theme-color" content="#1a1a1a">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
     
     <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
     <link rel="stylesheet" href="css/driver.css">
 </head>
 <body>
     <div id="driver-app">
-        <!-- LOGIN DEL CONDUCTOR -->
+        <!-- Login Screen -->
         <div id="login-screen" class="screen active">
             <div class="login-container">
                 <div class="login-header">
-                    <h1>🚌 Conductor</h1>
+                    <div class="logo">🚌</div>
+                    <h1>CONDUCTOR</h1>
                     <p>Bus Chaitén - Ronda Municipal</p>
                 </div>
                 
                 <div class="login-form">
                     <div class="input-group">
-                        <label>Nombre del conductor</label>
-                        <input type="text" id="driver-name" placeholder="Ingresa tu nombre" autocomplete="off">
+                        <input type="text" id="driver-name" placeholder="Usuario" autocomplete="off" autocapitalize="off">
                     </div>
                     
                     <div class="input-group">
-                        <label>Contraseña</label>
-                        <input type="password" id="driver-password" placeholder="••••••••">
+                        <input type="password" id="driver-password" placeholder="Contraseña">
                     </div>
                     
                     <button class="login-btn" onclick="driverApp.login()">
-                        Iniciar Sesión
+                        INICIAR SESIÓN
                     </button>
-                </div>
-                
-                <div class="login-footer">
-                    <p>🔒 Área exclusiva para conductores</p>
                 </div>
             </div>
         </div>
         
-        <!-- PANTALLA PRINCIPAL CONDUCTOR -->
+        <!-- Main Driver Screen -->
         <div id="driver-main" class="screen">
             <div class="driver-header">
                 <div class="driver-info">
                     <span class="driver-name" id="display-driver-name">Conductor</span>
-                    <span class="driver-status connected">● Conectado</span>
+                    <span class="driver-status connected">● EN LÍNEA</span>
                 </div>
-                <button class="logout-btn" onclick="driverApp.logout()">Salir</button>
+                <button class="logout-btn" onclick="driverApp.logout()">SALIR</button>
             </div>
             
             <div class="driver-map" id="driver-map"></div>
@@ -59,21 +56,19 @@
             <div class="driver-controls">
                 <div id="gps-status" class="status-box stopped">
                     <div class="status-icon">📍</div>
-                    <div class="status-text">GPS Detenido</div>
-                    <div class="status-detail">Presiona iniciar para compartir ubicación</div>
+                    <div class="status-text">GPS DETENIDO</div>
+                    <div class="status-detail">Presiona iniciar</div>
                 </div>
                 
                 <button id="toggle-gps" class="action-btn start" onclick="driverApp.toggleGPS()">
-                    Iniciar GPS
+                    INICIAR GPS
                 </button>
                 
                 <div class="location-info">
-                    <span id="current-lat">-</span>, <span id="current-lng">-</span>
-                    <span id="current-time">-</span>
-                </div>
-                
-                <div class="battery-warning">
-                    ⚠️ Mantén la app abierta. Consume batería. Conecta el cargador.
+                    <span id="current-lat">--.-----</span>
+                    <span class="separator">|</span>
+                    <span id="current-lng">--.-----</span>
+                    <span class="time" id="current-time">--:--:--</span>
                 </div>
             </div>
         </div>

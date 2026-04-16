@@ -5,69 +5,55 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Bus Chaitén</title>
     
-    <!-- PWA Meta Tags -->
-    <meta name="theme-color" content="#0066cc">
-    <meta name="description" content="Rastreo en vivo del bus municipal de Chaitén">
+    <meta name="theme-color" content="#1a1a1a">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
     
-    <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json">
-    
-    <!-- Leaflet CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-    
-    <!-- Custom CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
     <link rel="stylesheet" href="css/style.css">
-    
-    <!-- Icons -->
     <link rel="apple-touch-icon" href="icons/icon-192x192.png">
 </head>
 <body>
     <div id="app">
-        <!-- PANTALLA DE PASAJERO - SOLO MAPA -->
-        <div id="map-screen" class="screen active">
-            <div id="map-container">
-                <div id="map"></div>
-                
-                <!-- Header flotante -->
-                <div class="floating-header">
-                    <h1>🚌 Bus Chaitén</h1>
-                    <div class="connection-status" id="connection-status">🟢</div>
-                </div>
-                
-                <!-- Info del bus flotante -->
-                <div id="bus-info-overlay" class="info-overlay">
-                    <div class="bus-status">
-                        <div class="bus-icon">🚌</div>
-                        <div class="bus-details">
-                            <div class="bus-status-text" id="bus-status-text">Buscando bus...</div>
-                            <div class="bus-last-update" id="bus-last-update">-</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Botón centrar -->
-                <button class="center-btn" onclick="app.centerOnBus()" title="Centrar">
-                    🎯
-                </button>
+        <div id="map-container">
+            <div id="map"></div>
+            
+            <!-- Status pill -->
+            <div class="status-pill" id="connection-status">
+                <span class="status-dot"></span>
+                <span class="status-text">Conectando...</span>
             </div>
+            
+            <!-- Bus info pill -->
+            <div class="bus-pill" id="bus-info">
+                <div class="bus-pill-icon">🚌</div>
+                <div class="bus-pill-content">
+                    <div class="bus-pill-status" id="bus-status-text">Buscando...</div>
+                    <div class="bus-pill-time" id="bus-last-update">-</div>
+                </div>
+            </div>
+            
+            <!-- Controls -->
+            <div class="map-controls">
+                <button class="control-btn zoom-in" onclick="app.zoomIn()">+</button>
+                <button class="control-btn zoom-out" onclick="app.zoomOut()">−</button>
+            </div>
+            
+            <!-- Center button -->
+            <button class="center-btn" onclick="app.centerOnBus()" id="center-btn" title="Centrar en bus">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3"/>
+                    <path d="M12 2v4M12 18v4M2 12h4M18 12h4"/>
+                </svg>
+            </button>
         </div>
     </div>
 
-    <!-- Scripts -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="js/config.js"></script>
     <script src="js/passenger.js"></script>
-    
-    <!-- Service Worker -->
-    <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js')
-                .then(reg => console.log('Service Worker registrado'))
-                .catch(err => console.log('Error:', err));
-        }
-    </script>
 </body>
 </html>

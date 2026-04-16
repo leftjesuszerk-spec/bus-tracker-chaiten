@@ -1,16 +1,23 @@
-/* Reset y base */
+/* ==============================================
+   Driver App - Minimal Dark Theme
+   Estilo CLI profesional
+   ============================================== */
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
 }
 
 html, body {
     height: 100%;
     width: 100%;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: #f5f5f5;
     overflow: hidden;
+    font-family: 'SF Mono', 'Fira Code', 'Monaco', 'Consolas', monospace;
+    background: #0d0d0d;
+    color: #e0e0e0;
+    touch-action: manipulation;
 }
 
 #driver-app {
@@ -25,108 +32,110 @@ html, body {
 }
 
 .screen.active {
-    display: block;
+    display: flex;
+    flex-direction: column;
 }
 
-/* LOGIN CONDUCTOR */
+/* ==============================================
+   Login Screen
+   ============================================== */
+
 .login-container {
-    height: 100%;
+    flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 30px;
-    background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+    padding: 40px 30px;
+    background: linear-gradient(180deg, #0d0d0d 0%, #1a1a1a 100%);
 }
 
 .login-header {
     text-align: center;
-    color: white;
-    margin-bottom: 40px;
+    margin-bottom: 50px;
+}
+
+.logo {
+    font-size: 48px;
+    margin-bottom: 20px;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5));
 }
 
 .login-header h1 {
-    font-size: 2em;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 4px;
+    color: #fff;
     margin-bottom: 10px;
 }
 
 .login-header p {
-    opacity: 0.9;
-    font-size: 1.1em;
+    font-size: 11px;
+    color: #666;
+    letter-spacing: 1px;
 }
 
 .login-form {
-    background: white;
-    border-radius: 16px;
-    padding: 30px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-}
-
-.input-group {
-    margin-bottom: 20px;
-}
-
-.input-group label {
-    display: block;
-    margin-bottom: 8px;
-    color: #333;
-    font-weight: 600;
-    font-size: 0.9em;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 
 .input-group input {
     width: 100%;
-    padding: 14px;
-    border: 2px solid #ddd;
-    border-radius: 10px;
-    font-size: 1em;
-    transition: border-color 0.2s;
+    padding: 16px;
+    background: rgba(30, 30, 30, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 14px;
+    font-family: inherit;
+    text-align: center;
+    transition: all 0.2s;
+}
+
+.input-group input::placeholder {
+    color: #555;
 }
 
 .input-group input:focus {
     outline: none;
-    border-color: #28a745;
+    border-color: #0066cc;
+    background: rgba(0, 102, 204, 0.1);
 }
 
 .login-btn {
-    width: 100%;
     padding: 16px;
-    background: #28a745;
-    color: white;
+    background: linear-gradient(135deg, #0066cc 0%, #004499 100%);
+    color: #fff;
     border: none;
-    border-radius: 10px;
-    font-size: 1.1em;
+    border-radius: 8px;
+    font-size: 13px;
     font-weight: 600;
+    letter-spacing: 2px;
+    font-family: inherit;
     cursor: pointer;
     margin-top: 10px;
     transition: all 0.2s;
 }
 
-.login-btn:hover {
-    background: #218838;
-    transform: translateY(-2px);
-}
-
 .login-btn:active {
-    transform: translateY(0);
+    transform: scale(0.98);
+    opacity: 0.9;
 }
 
-.login-footer {
-    text-align: center;
-    margin-top: 30px;
-    color: white;
-    opacity: 0.8;
-    font-size: 0.9em;
-}
+/* ==============================================
+   Main Driver Screen
+   ============================================== */
 
-/* PANTALLA PRINCIPAL CONDUCTOR */
 .driver-header {
-    background: #28a745;
-    color: white;
-    padding: 15px 20px;
+    background: rgba(26, 26, 26, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 14px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .driver-info {
@@ -135,128 +144,160 @@ html, body {
 }
 
 .driver-name {
-    font-size: 1.1em;
+    font-size: 13px;
     font-weight: 600;
+    color: #fff;
 }
 
 .driver-status {
-    font-size: 0.8em;
-    opacity: 0.9;
-    margin-top: 3px;
+    font-size: 9px;
+    color: #666;
+    letter-spacing: 1px;
+    margin-top: 4px;
 }
 
 .driver-status.connected {
-    color: #90EE90;
+    color: #00ff88;
 }
 
 .logout-btn {
-    background: rgba(255,255,255,0.2);
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-size: 0.9em;
+    background: rgba(255, 255, 255, 0.05);
+    color: #666;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 10px;
+    letter-spacing: 1px;
+    font-family: inherit;
     cursor: pointer;
+    transition: all 0.2s;
+}
+
+.logout-btn:active {
+    background: rgba(255, 68, 68, 0.2);
+    color: #ff4444;
+    border-color: rgba(255, 68, 68, 0.3);
 }
 
 .driver-map {
-    height: 40%;
+    flex: 1;
     width: 100%;
-    background: #e0e0e0;
+    background: #1a1a1a;
 }
 
 .driver-controls {
-    flex: 1;
-    background: white;
+    background: #0d0d0d;
     padding: 20px;
-    display: flex;
-    flex-direction: column;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .status-box {
-    background: #f8f9fa;
-    border-radius: 12px;
-    padding: 20px;
+    background: rgba(30, 30, 30, 0.6);
+    border-radius: 8px;
+    padding: 16px;
     text-align: center;
-    margin-bottom: 15px;
-    border-left: 4px solid #dc3545;
+    margin-bottom: 16px;
+    border-left: 3px solid #ff4444;
 }
 
 .status-box.active {
-    border-left-color: #28a745;
+    border-left-color: #00ff88;
 }
 
 .status-icon {
-    font-size: 2.5em;
+    font-size: 24px;
     margin-bottom: 8px;
 }
 
 .status-text {
-    font-size: 1.1em;
+    font-size: 12px;
     font-weight: 600;
-    margin-bottom: 5px;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
 }
 
 .status-detail {
-    color: #666;
-    font-size: 0.9em;
+    font-size: 10px;
+    color: #555;
 }
 
 .action-btn {
     width: 100%;
-    padding: 18px;
+    padding: 16px;
     border: none;
-    border-radius: 12px;
-    font-size: 1.1em;
+    border-radius: 8px;
+    font-size: 13px;
     font-weight: 600;
+    letter-spacing: 2px;
+    font-family: inherit;
     cursor: pointer;
     transition: all 0.2s;
 }
 
 .action-btn.start {
-    background: #28a745;
-    color: white;
+    background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+    color: #fff;
 }
 
 .action-btn.stop {
-    background: #dc3545;
-    color: white;
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    color: #fff;
 }
 
-.action-btn:hover {
-    opacity: 0.9;
+.action-btn:active {
+    transform: scale(0.98);
 }
 
 .location-info {
     text-align: center;
-    color: #666;
-    font-size: 0.9em;
-    margin: 15px 0;
-    font-family: monospace;
+    color: #555;
+    font-size: 11px;
+    margin-top: 16px;
+    font-family: 'SF Mono', monospace;
+    letter-spacing: 1px;
 }
 
-.location-info span {
-    margin: 0 5px;
+.location-info .separator {
+    margin: 0 10px;
+    color: #333;
 }
 
-.battery-warning {
-    background: #fff3cd;
-    border-left: 4px solid #ffc107;
-    padding: 15px;
-    border-radius: 8px;
-    font-size: 0.85em;
-    color: #856404;
-    text-align: center;
-    margin-top: auto;
+.location-info .time {
+    color: #00ff88;
+    margin-left: 10px;
 }
 
-/* Error message */
+/* ==============================================
+   Leaflet
+   ============================================== */
+
+.leaflet-container {
+    background: #1a1a1a;
+}
+
+.leaflet-control-zoom {
+    display: none !important;
+}
+
+.leaflet-control-attribution {
+    display: none !important;
+}
+
+.leaflet-tile-pane {
+    filter: brightness(0.85) contrast(1.1) saturate(0.9);
+}
+
+/* ==============================================
+   Error message
+   ============================================== */
+
 .error-message {
-    background: #f8d7da;
-    color: #721c24;
+    background: rgba(255, 68, 68, 0.1);
+    border: 1px solid rgba(255, 68, 68, 0.2);
+    color: #ff4444;
     padding: 12px;
-    border-radius: 8px;
-    margin-bottom: 15px;
+    border-radius: 6px;
     text-align: center;
-    font-size: 0.9em;
+    font-size: 11px;
+    margin-bottom: 10px;
 }
