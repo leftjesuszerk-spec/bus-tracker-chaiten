@@ -25,7 +25,7 @@
 </head>
 <body>
     <div id="app">
-        <!-- MAPA PRINCIPAL - Se muestra directamente -->
+        <!-- PANTALLA DE PASAJERO - SOLO MAPA -->
         <div id="map-screen" class="screen active">
             <div id="map-container">
                 <div id="map"></div>
@@ -47,62 +47,10 @@
                     </div>
                 </div>
                 
-                <!-- Botones de control -->
+                <!-- Botón centrar -->
                 <button class="center-btn" onclick="app.centerOnBus()" title="Centrar">
                     🎯
                 </button>
-                
-                <button class="driver-access-btn" onclick="app.showDriverModal()" title="Modo Conductor">
-                    ⚙️
-                </button>
-            </div>
-        </div>
-
-        <!-- Modal para acceso conductor -->
-        <div id="driver-modal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2>Modo Conductor</h2>
-                    <button class="close-btn" onclick="app.hideDriverModal()">×</button>
-                </div>
-                <div class="modal-body">
-                    <p>Esto iniciará el GPS para compartir la ubicación del bus.</p>
-                    <button class="action-btn driver-enter" onclick="app.enterDriverMode()">
-                        Ingresar como Conductor
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Pantalla del conductor (full screen) -->
-        <div id="driver-screen" class="screen">
-            <div class="driver-fullscreen">
-                <div class="driver-header">
-                    <h2>🚌 Modo Conductor</h2>
-                    <button class="close-btn" onclick="app.exitDriverMode()">×</button>
-                </div>
-                
-                <div class="driver-map-preview" id="driver-map-preview"></div>
-                
-                <div class="driver-controls">
-                    <div id="driver-status" class="status-box stopped">
-                        <div class="status-icon">📍</div>
-                        <div class="status-text">GPS Detenido</div>
-                        <div class="status-detail">Presiona iniciar</div>
-                    </div>
-                    
-                    <button id="toggle-gps-btn" class="action-btn start" onclick="app.toggleGPS()">
-                        Iniciar GPS
-                    </button>
-                    
-                    <div class="driver-info-simple">
-                        <span id="driver-lat">-</span>, <span id="driver-lng">-</span>
-                    </div>
-                    
-                    <div class="battery-warning">
-                        ⚠️ Mantén la app abierta. Consume batería.
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -111,14 +59,14 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="js/config.js"></script>
-    <script src="js/app.js"></script>
+    <script src="js/passenger.js"></script>
     
     <!-- Service Worker -->
     <script>
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('sw.js')
                 .then(reg => console.log('Service Worker registrado'))
-                .catch(err => console.log('Error registrando Service Worker:', err));
+                .catch(err => console.log('Error:', err));
         }
     </script>
 </body>
