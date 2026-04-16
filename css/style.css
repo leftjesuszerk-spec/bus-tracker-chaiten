@@ -1,6 +1,6 @@
 /* ==============================================
    Bus Tracker Chaitén - Minimal Dark Theme
-   Con sidebar izquierda
+   Con sidebar izquierda - Sin controles de zoom
    ============================================== */
 
 * {
@@ -160,21 +160,6 @@ html, body {
     margin-bottom: 10px;
 }
 
-.route-info {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 10px;
-    color: #888;
-    margin-bottom: 4px;
-    margin-top: 8px;
-}
-
-.route-arrow {
-    color: #00ff88;
-    font-weight: bold;
-}
-
 .schedule-times {
     font-size: 9px;
     color: #aaa;
@@ -183,58 +168,10 @@ html, body {
 }
 
 /* ==============================================
-   Map Controls - Zoom
+   Follow Button - Replaces center button
    ============================================== */
 
-.map-controls {
-    position: absolute;
-    right: 16px;
-    bottom: 100px;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    z-index: 1000;
-}
-
-.control-btn {
-    width: 44px;
-    height: 44px;
-    background: rgba(26, 26, 26, 0.85);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 10px;
-    color: #888;
-    font-size: 22px;
-    font-weight: 300;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease;
-    font-family: inherit;
-}
-
-.control-btn:active {
-    background: rgba(40, 40, 40, 0.95);
-    color: #fff;
-    transform: scale(0.95);
-}
-
-.control-btn:first-child {
-    border-bottom: none;
-    border-radius: 10px 10px 4px 4px;
-}
-
-.control-btn:last-child {
-    border-radius: 4px 4px 10px 10px;
-}
-
-/* ==============================================
-   Center Button
-   ============================================== */
-
-.center-btn {
+.follow-btn {
     position: absolute;
     right: 16px;
     bottom: 24px;
@@ -255,17 +192,29 @@ html, body {
     transition: all 0.2s ease;
 }
 
-.center-btn:active {
+.follow-btn:active {
     transform: scale(0.92);
     background: rgba(0, 102, 204, 1);
 }
 
-.center-btn svg {
+.follow-btn svg {
     width: 20px;
     height: 20px;
 }
 
-.center-btn.hidden {
+.follow-text {
+    position: absolute;
+    bottom: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    color: #fff;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.follow-btn.hidden {
     opacity: 0;
     pointer-events: none;
 }
@@ -349,12 +298,7 @@ html, body {
         max-width: 220px;
     }
     
-    .map-controls {
-        right: 20px;
-        bottom: 110px;
-    }
-    
-    .center-btn {
+    .follow-btn {
         right: 20px;
         bottom: 30px;
     }

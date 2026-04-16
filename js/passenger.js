@@ -56,15 +56,16 @@ const app = {
         
         console.log('Inicializando mapa en Chaitén:', chaitenCenter);
         
-        // Crear el mapa SIN restricciones de movimiento
+        // Crear el mapa con límites definidos
         this.state.map = L.map('map', {
             zoomControl: false,
             attributionControl: false,
-            // Quitar todas las restricciones de movimiento
-            minZoom: 10,
-            maxZoom: 19
-            // SIN maxBounds - libre movimiento
+            minZoom: CONFIG.app.minZoom,
+            maxZoom: CONFIG.app.maxZoom
         });
+        
+        // Establecer límites del área (aprox 15 km alrededor de Chaitén)
+        this.state.map.setMaxBounds(CONFIG.app.maxBounds);
         
         // Establecer vista inicial
         this.state.map.setView(chaitenCenter, 15);

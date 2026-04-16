@@ -50,18 +50,12 @@
                 </div>
             </div>
             
-            <!-- Controls -->
-            <div class="map-controls">
-                <button class="control-btn zoom-in" onclick="app.zoomIn()">+</button>
-                <button class="control-btn zoom-out" onclick="app.zoomOut()">−</button>
-            </div>
-            
-            <!-- Center button -->
-            <button class="center-btn" onclick="app.centerOnBus()" id="center-btn" title="Centrar en bus">
+            <!-- Follow button -->
+            <button class="follow-btn" onclick="app.centerOnBus()" id="follow-btn" title="Seguir bus">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="3"/>
-                    <path d="M12 2v4M12 18v4M2 12h4M18 12h4"/>
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.54 5.82 22l-5-4.87 6.91-3.09L12 9l-3.09-6.26L2 9.27l5-4.87z"/>
                 </svg>
+                <span class="follow-text">SEGUIR</span>
             </button>
         </div>
     </div>

@@ -47,15 +47,15 @@ const CONFIG = {
             lat: -42.9150,  // Chaitén, Chile
             lng: -72.7167
         },
-        // Límites del mapa: solo Chaitén y alrededores inmediatos
+        // Límites del mapa: área alrededor de Chaitén (aprox 15 km radius)
         // [sudoeste, noreste]
-        mapBounds: [
-            [-42.9250, -72.7267], // sudoeste (límite sur-oeste)
-            [-42.9050, -72.7067]  // noreste (límite norte-este)
+        maxBounds: [
+            [-43.0650, -72.9167], // sudoeste
+            [-42.7650, -72.5167]  // noreste
         ],
         // Zoom mínimo y máximo para mantener foco en el pueblo
-        minZoom: 14,
-        maxZoom: 19
+        minZoom: 12,
+        maxZoom: 18
     },
     
     // Configuración de Supabase (se rellena dinámicamente)
