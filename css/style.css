@@ -110,12 +110,6 @@ html, body {
 .bus-status-sidebar {
     display: flex;
     align-items: center;
-    gap: 10px;
-}
-
-.bus-status-sidebar .bus-icon {
-    font-size: 24px;
-    line-height: 1;
 }
 
 .bus-status-sidebar .bus-info {
@@ -133,6 +127,14 @@ html, body {
 .bus-status-sidebar .bus-last-update {
     font-size: 9px;
     color: #666;
+}
+
+.bus-status-sidebar .bus-status-text.moving {
+    color: #00ff88;
+}
+
+.bus-status-sidebar .bus-status-text.stopped {
+    color: #ffaa00;
 }
 
 .sidebar-divider {

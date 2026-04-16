@@ -9,7 +9,13 @@ const app = {
         map: null,
         busMarker: null,
         hasBusLocation: false,
-        connectionStatus: 'connecting'
+        connectionStatus: 'connecting',
+        // Estado de movimiento
+        isMoving: false,
+        lastPosition: null,
+        lastMoveTime: null,
+        stillThreshold: 5000, // 5 segundos para considerar que está detenido
+        distanceThreshold: 0.0001 // ~10 metros en coordenadas
     },
     
     init() {
@@ -174,12 +180,20 @@ const app = {
         const wasFirstUpdate = !this.state.hasBusLocation;
         this.state.hasBusLocation = true;
         
-        this.setBusStatus('🚌 En ruta', this.formatTime(location.timestamp));
+        // Detectar estado de movimiento
+        this.detectMovement(location);
+        
+        // Mostrar estado
+        const statusText = this.state.isMoving ? '🚌 En movimiento' : '⏹️ Detenido';
+        this.setBusStatus(statusText, this.formatTime(location.timestamp));
         this.showCenterButton();
         
         if (this.state.busMarker) {
             this.state.busMarker.setLatLng([location.lat, location.lng]);
             this.state.busMarker.setPopupContent(this.getBusPopup(location.timestamp));
+            
+            // Actualizar color del marcador según estado
+            this.updateBusMarkerStyle(this.state.isMoving);
         } else if (this.state.map) {
             this.state.busMarker = L.marker([location.lat, location.lng], {
                 icon: L.divIcon({
@@ -215,6 +229,64 @@ const app = {
                 }, 300);
             }
         }
+    },
+    
+    // Detectar si el bus está en movimiento o detenido
+    detectMovement(location) {
+        const now = Date.now();
+        
+        if (this.state.lastPosition) {
+            // Calcular distancia desde última posición
+            const latDiff = Math.abs(location.lat - this.state.lastPosition.lat);
+            const lngDiff = Math.abs(location.lng - this.state.lastPosition.lng);
+            const distance = Math.sqrt(latDiff * latDiff + lngDiff * lngDiff);
+            
+            // Si se movió más allá del umbral, está en movimiento
+            if (distance > this.state.distanceThreshold) {
+                this.state.isMoving = true;
+                this.state.lastMoveTime = now;
+            } else {
+                // Verificar si ha estado sin moverse por más de X segundos
+                if (this.state.lastMoveTime && (now - this.state.lastMoveTime) > this.state.stillThreshold) {
+                    this.state.isMoving = false;
+                }
+            }
+        }
+        
+        // Actualizar última posición
+        this.state.lastPosition = { lat: location.lat, lng: location.lng };
+        
+        if (!this.state.lastMoveTime) {
+            this.state.lastMoveTime = now;
+        }
+    },
+    
+    // Actualizar estilo del marcador según estado
+    updateBusMarkerStyle(isMoving) {
+        if (!this.state.busMarker) return;
+        
+        const color = isMoving ? '#0066cc' : '#ffaa00';
+        const shadow = isMoving ? 'rgba(0, 102, 204, 0.5)' : 'rgba(255, 170, 0, 0.5)';
+        
+        this.state.busMarker.setIcon(L.divIcon({
+            className: 'bus-marker',
+            html: `
+                <div style="
+                    background: linear-gradient(135deg, ${color} 0%, ${color}dd 100%);
+                    border: 3px solid #fff;
+                    border-radius: 50%;
+                    width: 36px;
+                    height: 36px;
+                    box-shadow: 0 4px 16px ${shadow};
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 18px;
+                ">🚌</div>
+            `,
+            iconSize: [36, 36],
+            iconAnchor: [18, 18]
+        }));
     },
     
     getBusPopup(timestamp) {
