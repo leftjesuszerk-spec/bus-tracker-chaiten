@@ -171,6 +171,7 @@ const app = {
     },
     
     updateBusLocation(location) {
+        const wasFirstUpdate = !this.state.hasBusLocation;
         this.state.hasBusLocation = true;
         
         this.setBusStatus('🚌 En ruta', this.formatTime(location.timestamp));
@@ -203,6 +204,16 @@ const app = {
             }).addTo(this.state.map);
             
             this.state.busMarker.bindPopup(this.getBusPopup(location.timestamp));
+            
+            // Si es la primera vez que se recibe ubicación, centrar automáticamente
+            if (wasFirstUpdate) {
+                setTimeout(() => {
+                    this.state.map.setView([location.lat, location.lng], 16, {
+                        animate: true,
+                        duration: 0.5
+                    });
+                }, 300);
+            }
         }
     },
     
