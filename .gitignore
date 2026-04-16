@@ -30,3 +30,4 @@ supabase/config.toml
 # Build outputs (si los hubiera)
 dist/
 build/
+.vercel
