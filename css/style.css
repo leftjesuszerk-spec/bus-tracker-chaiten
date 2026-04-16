@@ -350,11 +350,17 @@ html, body {
     text-align: center;
 }
 
-.custom-stop-icon {
-    background: #dc3545;
-    border: 3px solid white;
-    border-radius: 50%;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+.plaza-marker {
+    z-index: 1000 !important;
+}
+
+.plaza-marker div {
+    font-family: Arial, sans-serif !important;
+}
+
+/* Animación suave para marcadores */
+.leaflet-marker-icon {
+    transition: transform 0.3s ease-out;
 }
 
 /* Animaciones */

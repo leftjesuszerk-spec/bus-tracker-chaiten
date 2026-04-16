@@ -41,65 +41,40 @@ const CONFIG = {
     app: {
         name: 'Bus Chaitén',
         version: '1.0.0',
-        updateInterval: 30000, // 30 segundos
+        updateInterval: 15000, // 15 segundos (mínimo viable)
         busId: 'bus-chaiten-001', // ID único del bus
         defaultLocation: {
             lat: -42.9150,  // Chaitén, Chile
             lng: -72.7167
-        }
+        },
+        // Límites del mapa: solo Chaitén y alrededores inmediatos
+        // [sudoeste, noreste]
+        mapBounds: [
+            [-42.9250, -72.7267], // sudoeste (límite sur-oeste)
+            [-42.9050, -72.7067]  // noreste (límite norte-este)
+        ],
+        // Zoom mínimo y máximo para mantener foco en el pueblo
+        minZoom: 14,
+        maxZoom: 19
     },
     
     // Configuración de Supabase (se rellena dinámicamente)
     supabase: null,
     
-    // Paradas del recorrido (coordenadas aproximadas de Chaitén)
-    // AJUSTAR según el recorrido real del bus
-    stops: [
-        {
-            name: 'Terminal de Buses',
-            lat: -42.9150,
-            lng: -72.7167,
-            description: 'Punto de partida'
-        },
-        {
-            name: 'Plaza Principal',
-            lat: -42.9160,
-            lng: -72.7150,
-            description: 'Centro del pueblo'
-        },
-        {
-            name: 'Hospital',
-            lat: -42.9180,
-            lng: -72.7140,
-            description: 'Hospital de Chaitén'
-        },
-        {
-            name: 'Escuela',
-            lat: -42.9140,
-            lng: -72.7180,
-            description: 'Colegio local'
-        },
-        {
-            name: 'Sector Industrial',
-            lat: -42.9120,
-            lng: -72.7200,
-            description: 'Zona industrial'
-        }
-    ],
-    
-    // Horarios aproximados (ajustar según horarios reales)
-    schedule: [
-        { time: '07:00', route: 'Salida Terminal' },
-        { time: '07:15', route: 'Plaza Principal' },
-        { time: '07:30', route: 'Hospital' },
-        { time: '07:45', route: 'Escuela' },
-        { time: '08:00', route: 'Sector Industrial' },
-        { time: '09:00', route: 'Vuelta Completa' },
-        { time: '12:00', route: 'Mediodía' },
-        { time: '17:00', route: 'Tarde' },
-        { time: '18:00', route: 'Último recorrido' }
-    ]
+    // Solo Plaza Principal destacada (punto central del pueblo)
+    plazaPrincipal: {
+        name: 'PLAZA PRINCIPAL',
+        lat: -42.9150,
+        lng: -72.7167,
+        description: 'Centro de Chaitén'
+    }
 };
+
+// Notas sobre el intervalo de actualización:
+// - 15 segundos: Muy responsivo, buena experiencia de usuario
+// - Consumo: ~240 requests/hora por usuario activo
+// - Supabase Free: Soporta 100,000 requests/mes (~400 usuarios activos)
+// - Batería: Consumo moderado, recomendado usar con cargador
 
 // Exportar para uso en otros archivos
 window.CONFIG = CONFIG;

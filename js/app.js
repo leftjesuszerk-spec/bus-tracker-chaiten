@@ -69,23 +69,32 @@ const app = {
             const mapContainer = document.getElementById('map');
             if (!mapContainer) return;
             
+            // Crear mapa con límites de zoom y maxBounds
             this.state.map = L.map('map', {
-                zoomControl: false  // Ocultar controles de zoom por defecto
+                zoomControl: false,
+                minZoom: CONFIG.app.minZoom,
+                maxZoom: CONFIG.app.maxZoom,
+                maxBounds: CONFIG.app.mapBounds,
+                maxBoundsViscosity: 1.0  // Evitar salir de los límites
             }).setView(
                 [CONFIG.app.defaultLocation.lat, CONFIG.app.defaultLocation.lng],
                 15
             );
             
+            // Forzar el mapa a mantenerse dentro de los bounds
+            this.state.map.setMaxBounds(CONFIG.app.mapBounds);
+            
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: false,
-                maxZoom: 19
+                maxZoom: CONFIG.app.maxZoom
             }).addTo(this.state.map);
             
             L.control.zoom({
                 position: 'bottomright'
             }).addTo(this.state.map);
             
-            this.addStopMarkers();
+            // Solo mostrar Plaza Principal
+            this.addPlazaMarker();
             
             setTimeout(() => {
                 this.state.map.invalidateSize();
@@ -94,29 +103,45 @@ const app = {
         }, 50);
     },
     
-    addStopMarkers() {
-        if (!this.state.map) return;
+    addPlazaMarker() {
+        if (!this.state.map || !CONFIG.plazaPrincipal) return;
         
-        CONFIG.stops.forEach(stop => {
-            const marker = L.marker([stop.lat, stop.lng], {
-                icon: L.divIcon({
-                    className: 'stop-marker',
-                    html: `<div style="
-                        background: #dc3545;
-                        border: 3px solid white;
+        const plaza = CONFIG.plazaPrincipal;
+        
+        // Marcador de la Plaza Principal (punto central destacado)
+        const marker = L.marker([plaza.lat, plaza.lng], {
+            icon: L.divIcon({
+                className: 'plaza-marker',
+                html: `
+                    <div style="
+                        background: #FFD700;
+                        border: 4px solid #FF6B35;
                         border-radius: 50%;
-                        width: 18px;
-                        height: 18px;
-                        box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-                    "></div>`,
-                    iconSize: [18, 18],
-                    iconAnchor: [9, 9]
-                })
-            }).addTo(this.state.map);
-            
-            marker.bindPopup(`<b>${stop.name}</b>`);
-            this.state.stopMarkers.push(marker);
-        });
+                        width: 60px;
+                        height: 60px;
+                        box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-weight: bold;
+                        font-size: 9px;
+                        color: #333;
+                        text-align: center;
+                        line-height: 1.1;
+                        font-family: Arial, sans-serif;
+                        text-transform: uppercase;
+                    ">
+                        ⭐<br>PLAZA
+                    </div>
+                `,
+                iconSize: [60, 60],
+                iconAnchor: [30, 30]
+            })
+        }).addTo(this.state.map);
+        
+        marker.bindPopup(`<b style="font-size:14px">${plaza.name}</b><br>${plaza.description}`);
+        
+        this.state.stopMarkers.push(marker);
     },
     
     // ============================================
@@ -280,12 +305,44 @@ const app = {
             
             this.state.driverMap = L.map('driver-map-preview', {
                 zoomControl: false,
-                attributionControl: false
+                attributionControl: false,
+                minZoom: CONFIG.app.minZoom,
+                maxZoom: CONFIG.app.maxZoom,
+                maxBounds: CONFIG.app.mapBounds,
+                maxBoundsViscosity: 1.0
             }).setView([CONFIG.app.defaultLocation.lat, CONFIG.app.defaultLocation.lng], 14);
             
+            this.state.driverMap.setMaxBounds(CONFIG.app.mapBounds);
+            
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19
+                maxZoom: CONFIG.app.maxZoom
             }).addTo(this.state.driverMap);
+            
+            // Mostrar plaza también en modo conductor
+            if (CONFIG.plazaPrincipal) {
+                const plaza = CONFIG.plazaPrincipal;
+                L.marker([plaza.lat, plaza.lng], {
+                    icon: L.divIcon({
+                        className: 'plaza-marker-small',
+                        html: `
+                            <div style="
+                                background: #FFD700;
+                                border: 3px solid #FF6B35;
+                                border-radius: 50%;
+                                width: 30px;
+                                height: 30px;
+                                box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                font-size: 12px;
+                            ">⭐</div>
+                        `,
+                        iconSize: [30, 30],
+                        iconAnchor: [15, 15]
+                    })
+                }).addTo(this.state.driverMap).bindPopup('<b>PLAZA</b>');
+            }
             
         }, 100);
     },
