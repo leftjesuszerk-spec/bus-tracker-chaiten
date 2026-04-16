@@ -7,7 +7,7 @@
     
     <meta name="theme-color" content="#1a1a1a">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-status-bar-style" content="black-translucent">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
     
     <link rel="manifest" href="manifest.json">
@@ -20,18 +20,44 @@
         <div id="map-container">
             <div id="map"></div>
             
-            <!-- Status pill -->
+            <!-- Status pill top right -->
             <div class="status-pill" id="connection-status">
                 <span class="status-dot"></span>
                 <span class="status-text">Conectando...</span>
             </div>
             
-            <!-- Bus info pill -->
-            <div class="bus-pill" id="bus-info">
-                <div class="bus-pill-icon">🚌</div>
-                <div class="bus-pill-content">
-                    <div class="bus-pill-status" id="bus-status-text">Buscando...</div>
-                    <div class="bus-pill-time" id="bus-last-update">-</div>
+            <!-- Left Sidebar - Status + Schedule -->
+            <div class="sidebar" id="sidebar">
+                <!-- Bus Status -->
+                <div class="bus-status-sidebar">
+                    <div class="bus-icon">🚌</div>
+                    <div class="bus-info">
+                        <div class="bus-status-text" id="bus-status-text">Buscando...</div>
+                        <div class="bus-last-update" id="bus-last-update">-</div>
+                    </div>
+                </div>
+                
+                <!-- Divider -->
+                <div class="sidebar-divider"></div>
+                
+                <!-- Schedule -->
+                <div class="schedule-section">
+                    <div class="schedule-title">HORARIOS</div>
+                    <div class="schedule-subtitle">LUNES A VIERNES</div>
+                    
+                    <div class="route-info">
+                        <span class="route-arrow">↑</span> NORTE
+                    </div>
+                    <div class="schedule-times">
+                        07:30 • 08:30 • 10:30 • 13:00 • 16:30 • 18:00 • 19:30
+                    </div>
+                    
+                    <div class="route-info">
+                        <span class="route-arrow">↓</span> SUR
+                    </div>
+                    <div class="schedule-times">
+                        07:30 • 08:30 • 10:30 • 13:00 • 16:30 • 18:00 • 19:30
+                    </div>
                 </div>
             </div>
             
