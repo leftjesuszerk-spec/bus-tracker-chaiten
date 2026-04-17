@@ -220,7 +220,7 @@ const driverApp = {
             statusBox.querySelector('.status-text').textContent = 'GPS ACTIVO';
             statusBox.querySelector('.status-detail').textContent = 'Compartiendo ubicación';
             
-            btn.textContent = 'DETENER GPS';
+            btn.textContent = 'DETENER SINCRONIZACIÓN';
             btn.classList.remove('start');
             btn.classList.add('stop');
             
@@ -235,7 +235,7 @@ const driverApp = {
             statusBox.querySelector('.status-text').textContent = 'GPS DETENIDO';
             statusBox.querySelector('.status-detail').textContent = 'Presiona iniciar';
             
-            btn.textContent = 'INICIAR GPS';
+                btn.textContent = 'INICIAR SINCRONIZACIÓN';
             btn.classList.remove('stop');
             btn.classList.add('start');
             
